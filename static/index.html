@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ayush-Setu | Academia - Industry Skill Mapping & Placement Portal (SIH26044)</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <!-- Chart.js for data visualizations -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+  <!-- Top Tricolor Bar -->
+  <div class="top-gov-bar"></div>
+
+  <!-- Main Portal Header -->
+  <header class="portal-header">
+    <div class="header-container">
+      <div class="brand-section">
+        <div class="gov-emblem">🌿</div>
+        <div class="brand-text">
+          <h1>
+            Ayush-Setu
+            <span class="brand-badge">SIH26044</span>
+            <span class="brand-badge sih-badge">Smart India Hackathon</span>
+          </h1>
+          <p class="brand-subtitle">Central Portal for Academia - Industry Collaboration, Skill Mapping & Placements (Ministry of Ayush)</p>
+        </div>
+      </div>
+
+      <!-- Live Role Switcher (Pre-configured for Hackathon Demo) -->
+      <div class="role-switcher-container">
+        <span class="role-label">Active Persona:</span>
+        <select id="roleSelect" class="role-select" onchange="switchPersona(this.value)">
+          <option value="1">🎓 Student: Priya Sharma (AIIA)</option>
+          <option value="4">🏢 Recruiter: Dr. Rajesh Verma (Dabur R&D)</option>
+          <option value="7">🏛️ Academia / TPO: Prof. Sunita Rao (AIIA)</option>
+          <option value="8">🇮🇳 Ministry Admin: Shri V. K. Saxena (Ayush)</option>
+        </select>
+        <div class="user-pill" id="activeUserPill">
+          <div class="user-avatar" id="activeUserAvatar">PS</div>
+          <div class="user-details">
+            <div class="user-name" id="activeUserName">Priya Sharma</div>
+            <div class="user-role-badge" id="activeUserOrg">B.Pharm (Ayurveda), AIIA</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Dynamic Navigation Sub-Bar -->
+  <nav class="portal-nav-bar">
+    <div class="nav-container" id="navTabsContainer">
+      <!-- Injected via JavaScript based on active persona -->
+    </div>
+  </nav>
+
+  <!-- Main Content Container -->
+  <main class="main-wrapper">
+
+    <!-- ========================================================================= -->
+    <!-- 1. STUDENT VIEW -->
+    <!-- ========================================================================= -->
+    <section id="view-student" class="portal-view active">
+      <!-- Hero Banner -->
+      <div class="role-hero-banner">
+        <div class="hero-content">
+          <h2>Welcome back, <span id="studentHeroName">Priya</span>! 🎓</h2>
+          <p>Targeting: <strong>Ayurvedic Formulation & Drug Design Scientist</strong>. Your AI Skill Gap Index is continuously tracked against leading companies like Dabur, Himalaya, and Patanjali.</p>
+        </div>
+        <div class="hero-action-buttons">
+          <button class="btn btn-secondary" onclick="switchStudentTab('gap-tab')">📊 Analyze Skill Gap</button>
+          <button class="btn btn-primary" onclick="switchStudentTab('jobs-tab')">🔍 Browse Openings</button>
+        </div>
+      </div>
+
+      <!-- Student Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">AI Readiness Index</div>
+          <div class="stat-val" id="studentReadinessStat">88%</div>
+          <div class="stat-sub">↑ Top 5% in AIIA batch</div>
+          <div class="stat-icon">🎯</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Verified Skill Badges</div>
+          <div class="stat-val" id="studentVerifiedCount">4</div>
+          <div class="stat-sub">Ministry & TPO Accredited</div>
+          <div class="stat-icon">🏅</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Applications Submitted</div>
+          <div class="stat-val" id="studentAppCount">2</div>
+          <div class="stat-sub">1 Shortlisted • 1 Review</div>
+          <div class="stat-icon">📑</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Academic CGPA</div>
+          <div class="stat-val">8.85</div>
+          <div class="stat-sub">Class of 2026 (AIIA)</div>
+          <div class="stat-icon">🎓</div>
+        </div>
+      </div>
+
+      <!-- STUDENT TAB 1: SKILL GAP ANALYZER -->
+      <div id="student-subtab-gap" class="student-subtab">
+        <div class="section-header">
+          <h3>⚡ AI Skill Mapping & Gap Analysis Engine</h3>
+          <span class="text-muted" style="font-size: 0.85rem;">Powered by Ministry of Ayush Competency Taxonomy</span>
+        </div>
+
+        <div class="gap-analysis-layout">
+          <!-- Left Control Column -->
+          <div class="role-selector-card">
+            <label for="targetRoleSelect">Select Desired Industry Benchmark Role:</label>
+            <select id="targetRoleSelect" class="role-dropdown" onchange="runSkillGapAnalysis()">
+              <!-- Populated via API -->
+            </select>
+
+            <div class="match-score-card">
+              <div class="score-circle-container">
+                <span class="score-num" id="gapScoreValue">88%</span>
+              </div>
+              <div class="score-label">Role Compatibility Index</div>
+              <p id="gapScoreSummary" style="font-size: 0.8rem; color: #475569; margin-top: 6px;">Strong baseline with minor lab stability testing gaps.</p>
+            </div>
+
+            <!-- Radar Chart Container -->
+            <div class="radar-chart-card">
+              <canvas id="skillRadarChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Right Column: Results & Actionable Roadmap -->
+          <div class="gap-results-container">
+            <!-- Matched Skills -->
+            <div class="skills-category-card">
+              <div class="category-title matched">
+                <span>✅ Matched Competencies (<span id="matchedCount">0</span>)</span>
+                <span class="status-badge status-active">Ready for Industry</span>
+              </div>
+              <div class="skills-badge-list" id="matchedSkillsList">
+                <!-- Injected via JS -->
+              </div>
+            </div>
+
+            <!-- Partial Skills -->
+            <div class="skills-category-card">
+              <div class="category-title partial">
+                <span>⚠️ Partial Competencies (<span id="partialCount">0</span>)</span>
+                <span class="status-badge status-shortlisted">Needs Upgradation</span>
+              </div>
+              <div class="skills-badge-list" id="partialSkillsList">
+                <!-- Injected via JS -->
+              </div>
+            </div>
+
+            <!-- Missing Skills -->
+            <div class="skills-category-card">
+              <div class="category-title missing">
+                <span>❌ Missing Industry Competencies (<span id="missingCount">0</span>)</span>
+                <span class="status-badge status-applied">Critical Gaps</span>
+              </div>
+              <div class="skills-badge-list" id="missingSkillsList">
+                <!-- Injected via JS -->
+              </div>
+            </div>
+
+            <!-- Personalized Learning & Upskilling Roadmap -->
+            <div class="skills-category-card">
+              <div class="category-title" style="color: var(--primary-dark);">
+                <span>🚀 AI Upskilling Roadmap & Bridge Recommendations</span>
+              </div>
+              <p style="font-size: 0.84rem; color: var(--text-muted); margin-bottom: 16px;">
+                Direct curated micro-courses, lab workshops, and hands-on bridge projects designed to close your identified competency deltas before graduation.
+              </p>
+              <div class="roadmap-grid" id="roadmapGrid">
+                <!-- Injected via JS -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STUDENT TAB 2: INTERNSHIPS & PLACEMENTS -->
+      <div id="student-subtab-jobs" class="student-subtab" style="display: none;">
+        <div class="section-header">
+          <h3>💼 Smart Internship & Placement Matchmaker</h3>
+          <div class="filter-bar">
+            <input type="text" id="jobSearchInput" class="search-input" placeholder="Search by title, company, skill (e.g., HPLC)..." onkeyup="filterJobs()">
+            <button class="filter-btn active" onclick="setJobFilter('all', this)">All Opportunities</button>
+            <button class="filter-btn" onclick="setJobFilter('Internship', this)">Internships</button>
+            <button class="filter-btn" onclick="setJobFilter('Placement', this)">Placements</button>
+          </div>
+        </div>
+
+        <div class="jobs-grid" id="jobsGrid">
+          <!-- Injected via JS -->
+        </div>
+      </div>
+
+      <!-- STUDENT TAB 3: SKILL VERIFICATION QUIZZES -->
+      <div id="student-subtab-quizzes" class="student-subtab" style="display: none;">
+        <div class="section-header">
+          <h3>🏅 Accredited Domain Skill Assessments</h3>
+          <span class="text-muted" style="font-size: 0.85rem;">Pass timed tests with ≥70% to earn official digital verified badges endorsed by Ministry/Industry</span>
+        </div>
+
+        <div class="jobs-grid" id="assessmentsGrid">
+          <!-- Injected via JS -->
+        </div>
+      </div>
+
+      <!-- STUDENT TAB 4: MY APPLICATIONS -->
+      <div id="student-subtab-applications" class="student-subtab" style="display: none;">
+        <div class="section-header">
+          <h3>📑 My Application Tracking System</h3>
+        </div>
+        <div class="table-responsive">
+          <table class="custom-table">
+            <thead>
+              <tr>
+                <th>Job / Internship</th>
+                <th>Company</th>
+                <th>Stipend / CTC</th>
+                <th>AI Match Score</th>
+                <th>Applied Date</th>
+                <th>Current Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="studentApplicationsTableBody">
+              <!-- Injected via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- STUDENT TAB 5: JOINT R&D CAPSTONES -->
+      <div id="student-subtab-projects" class="student-subtab" style="display: none;">
+        <div class="section-header">
+          <h3>🔬 Joint Industry-Academia R&D Challenges</h3>
+          <span class="text-muted" style="font-size: 0.85rem;">Solve real industrial bottlenecks with faculty mentors and industry grants</span>
+        </div>
+        <div class="jobs-grid" id="studentProjectsGrid">
+          <!-- Injected via JS -->
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ========================================================================= -->
+    <!-- 2. INDUSTRY RECRUITER VIEW -->
+    <!-- ========================================================================= -->
+    <section id="view-recruiter" class="portal-view">
+      <div class="role-hero-banner" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);">
+        <div class="hero-content">
+          <h2>Recruiter Portal: <span id="recruiterHeroCompany">Dabur India Ltd</span> 🏢</h2>
+          <p>Manage talent pipelines, evaluate applicants with verified skill rubrics, review ATS Kanban, and post real-world R&D challenges for university collaboration.</p>
+        </div>
+        <div class="hero-action-buttons">
+          <button class="btn btn-primary" onclick="openPostJobModal()">➕ Post Opening</button>
+          <button class="btn btn-secondary" onclick="openPostProjectModal()">🔬 Post R&D Challenge</button>
+        </div>
+      </div>
+
+      <!-- Recruiter Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Active Job Openings</div>
+          <div class="stat-val" id="recruiterOpeningsCount">2</div>
+          <div class="stat-sub">Phytochemistry & Formulation</div>
+          <div class="stat-icon">💼</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total Applicants</div>
+          <div class="stat-val" id="recruiterApplicantsCount">4</div>
+          <div class="stat-sub">AI Matchmaker Screened</div>
+          <div class="stat-icon">👥</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Active Academic MoUs</div>
+          <div class="stat-val">2</div>
+          <div class="stat-sub">AIIA & NIPER Mohali</div>
+          <div class="stat-icon">🤝</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Offers Extended</div>
+          <div class="stat-val">1</div>
+          <div class="stat-sub">100% Acceptance Rate</div>
+          <div class="stat-icon">✅</div>
+        </div>
+      </div>
+
+      <!-- RECRUITER SUB-TABS -->
+      <div id="recruiter-subtab-kanban" class="recruiter-subtab">
+        <div class="section-header">
+          <h3>📋 Applicant Tracking System (ATS Kanban)</h3>
+          <span class="text-muted" style="font-size: 0.85rem;">Click action buttons on applicant cards to progress through hiring stages</span>
+        </div>
+
+        <div class="kanban-board">
+          <!-- Column 1: Applied -->
+          <div class="kanban-column">
+            <div class="kanban-col-header">
+              <span>📥 Applied</span>
+              <span class="kanban-col-count" id="kanbanCount-Applied">0</span>
+            </div>
+            <div class="kanban-col-body" id="kanbanCol-Applied">
+              <!-- Injected via JS -->
+            </div>
+          </div>
+
+          <!-- Column 2: Shortlisted -->
+          <div class="kanban-column">
+            <div class="kanban-col-header">
+              <span>⭐ Shortlisted</span>
+              <span class="kanban-col-count" id="kanbanCount-Shortlisted">0</span>
+            </div>
+            <div class="kanban-col-body" id="kanbanCol-Shortlisted">
+              <!-- Injected via JS -->
+            </div>
+          </div>
+
+          <!-- Column 3: Interview -->
+          <div class="kanban-column">
+            <div class="kanban-col-header">
+              <span>🎙️ Interviewing</span>
+              <span class="kanban-col-count" id="kanbanCount-Interview">0</span>
+            </div>
+            <div class="kanban-col-body" id="kanbanCol-Interview">
+              <!-- Injected via JS -->
+            </div>
+          </div>
+
+          <!-- Column 4: Offered -->
+          <div class="kanban-column">
+            <div class="kanban-col-header">
+              <span>🎉 Offered</span>
+              <span class="kanban-col-count" id="kanbanCount-Offered">0</span>
+            </div>
+            <div class="kanban-col-body" id="kanbanCol-Offered">
+              <!-- Injected via JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RECRUITER SUBTAB 2: TALENT SEARCH -->
+      <div id="recruiter-subtab-talent" class="recruiter-subtab" style="display: none;">
+        <div class="section-header">
+          <h3>🔎 Verified Candidate Talent Pool Search</h3>
+          <div class="filter-bar">
+            <input type="text" id="candidateSkillFilter" class="search-input" placeholder="Filter by skill (e.g., HPLC, GCP, AutoDock)..." onkeyup="loadCandidates()">
+            <input type="text" id="candidateCollegeFilter" class="search-input" placeholder="Filter by institution (e.g., AIIA, IIT, NIPER)..." onkeyup="loadCandidates()">
+          </div>
+        </div>
+        <div class="jobs-grid" id="candidatesGrid">
+          <!-- Injected via JS -->
+        </div>
+      </div>
+
+      <!-- RECRUITER SUBTAB 3: POSTINGS MANAGEMENT -->
+      <div id="recruiter-subtab-postings" class="recruiter-subtab" style="display: none;">
+        <div class="section-header">
+          <h3>📁 My Job & Internship Listings</h3>
+          <button class="btn btn-primary btn-sm" onclick="openPostJobModal()">➕ New Opening</button>
+        </div>
+        <div class="table-responsive">
+          <table class="custom-table">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Type</th>
+                <th>Location</th>
+                <th>Stipend/Salary</th>
+                <th>Required Skills</th>
+                <th>Deadline</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="recruiterJobsTableBody">
+              <!-- Injected via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ========================================================================= -->
+    <!-- 3. ACADEMIA / TPO VIEW -->
+    <!-- ========================================================================= -->
+    <section id="view-tpo" class="portal-view">
+      <div class="role-hero-banner" style="background: linear-gradient(135deg, #0369a1 0%, #0c4a6e 100%);">
+        <div class="hero-content">
+          <h2>Academia & Placement Cell: <span id="tpoHeroInstitute">All India Institute of Ayurveda</span> 🏛️</h2>
+          <p>Bridge classroom outcomes with real industry needs. Audit curriculum alignment against live vacancies, endorse student skill portfolios, and track formal MoUs.</p>
+        </div>
+        <div class="hero-action-buttons">
+          <button class="btn btn-secondary" onclick="openAddMouModal()">🤝 Register New MoU</button>
+        </div>
+      </div>
+
+      <!-- TPO Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Batch Placement Rate</div>
+          <div class="stat-val">84.2%</div>
+          <div class="stat-sub">↑ 6.4% YoY Improvement</div>
+          <div class="stat-icon">📈</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Active Industry MoUs</div>
+          <div class="stat-val" id="tpoMouCount">4</div>
+          <div class="stat-sub">Dabur, Himalaya, Patanjali</div>
+          <div class="stat-icon">📜</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Curriculum Alignment</div>
+          <div class="stat-val" id="tpoAlignmentScore">84%</div>
+          <div class="stat-sub">Benchmark against 164 jobs</div>
+          <div class="stat-icon">🎯</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Students Endorsed</div>
+          <div class="stat-val">68</div>
+          <div class="stat-sub">Faculty Verified Badges</div>
+          <div class="stat-icon">🧑‍🏫</div>
+        </div>
+      </div>
+
+      <!-- TPO SUBTAB 1: CURRICULUM GAP ANALYSIS -->
+      <div id="tpo-subtab-curriculum" class="tpo-subtab">
+        <div class="section-header">
+          <h3>📊 Real-time Curriculum vs. Industry Demand Matrix</h3>
+          <span class="text-muted" style="font-size: 0.85rem;">Automated comparison between academic course outcomes and active job requirements</span>
+        </div>
+
+        <div class="gap-analysis-layout">
+          <!-- Left: Demand Ranking Chart -->
+          <div class="role-selector-card">
+            <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: 12px; color: var(--accent-navy);">
+              🔥 Most Demanded Industry Skills (Current Market)
+            </h4>
+            <div style="height: 280px; position: relative;">
+              <canvas id="tpoDemandBarChart"></canvas>
+            </div>
+            <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 12px;">
+              Data aggregated in real-time across all registered Ayush, Pharma, and Biotech recruiters on the platform.
+            </p>
+          </div>
+
+          <!-- Right: Course Alignment & Deficiencies -->
+          <div class="gap-results-container">
+            <div class="skills-category-card">
+              <div class="category-title" style="color: #b45309;">
+                <span>⚠️ Critical Curriculum Deficiencies & Action Items</span>
+                <span class="status-badge status-shortlisted">NBA / NAAC Compliance</span>
+              </div>
+              <div class="table-responsive" style="box-shadow: none; border: none;">
+                <table class="custom-table">
+                  <thead>
+                    <tr>
+                      <th>Industry Demanded Competency</th>
+                      <th>Market Demand</th>
+                      <th>Academic Status</th>
+                      <th>Recommended TPO Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tpoDeficienciesTableBody">
+                    <!-- Injected via JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- University Modules List -->
+            <div class="skills-category-card">
+              <div class="category-title" style="color: var(--primary-dark);">
+                <span>📚 Academic Modules & Alignment Scores</span>
+              </div>
+              <div class="roadmap-grid" id="tpoModulesGrid">
+                <!-- Injected via JS -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TPO SUBTAB 2: STUDENT ENDORSEMENTS -->
+      <div id="tpo-subtab-endorsements" class="tpo-subtab" style="display: none;">
+        <div class="section-header">
+          <h3>🧑‍🏫 Faculty Skill Endorsements Queue</h3>
+          <span class="text-muted" style="font-size: 0.85rem;">Verify student lab projects to validate their skill claims for recruiters</span>
+        </div>
+        <div class="table-responsive">
+          <table class="custom-table">
+            <thead>
+              <tr>
+                <th>Student</th>
+                <th>Declared Skill</th>
+                <th>Claimed Proficiency</th>
+                <th>Verification Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="tpoEndorsementsTableBody">
+              <!-- Injected via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TPO SUBTAB 3: MOUs & PARTNERSHIPS -->
+      <div id="tpo-subtab-mous" class="tpo-subtab" style="display: none;">
+        <div class="section-header">
+          <h3>📜 Industry MoUs & Collaborative Agreements</h3>
+          <button class="btn btn-primary btn-sm" onclick="openAddMouModal()">➕ Register New MoU</button>
+        </div>
+        <div class="jobs-grid" id="tpoMousGrid">
+          <!-- Injected via JS -->
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ========================================================================= -->
+    <!-- 4. MINISTRY ADMIN VIEW -->
+    <!-- ========================================================================= -->
+    <section id="view-admin" class="portal-view">
+      <div class="role-hero-banner" style="background: linear-gradient(135deg, #c2410c 0%, #7c2d12 100%);">
+        <div class="hero-content">
+          <h2>Ministry of Ayush: National Skill & Placement Mission 🇮🇳</h2>
+          <p>Macro oversight dashboard monitoring academia-industry linkages, regional skill supply vs. market demand heatmaps, and employability metrics across Indian states.</p>
+        </div>
+        <div class="hero-action-buttons">
+          <button class="btn btn-secondary" onclick="window.print()">🖨️ Export PDF Summary</button>
+        </div>
+      </div>
+
+      <!-- Admin Macro KPIs -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Total Registered Students</div>
+          <div class="stat-val" id="adminTotalStudents">1,424</div>
+          <div class="stat-sub">Across 42 Institutions</div>
+          <div class="stat-icon">🎓</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Verified Skill Badges</div>
+          <div class="stat-val" id="adminTotalBadges">3,850</div>
+          <div class="stat-sub">Accredited Competencies</div>
+          <div class="stat-icon">🏅</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Industry Recruiters</div>
+          <div class="stat-val" id="adminTotalRecruiters">44</div>
+          <div class="stat-sub">Dabur, Himalaya, Patanjali...</div>
+          <div class="stat-icon">🏢</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Active Academia MoUs</div>
+          <div class="stat-val" id="adminTotalMous">20</div>
+          <div class="stat-sub">Active Joint Initiatives</div>
+          <div class="stat-icon">🤝</div>
+        </div>
+      </div>
+
+      <!-- Macro Analytics Section -->
+      <div class="gap-analysis-layout" style="margin-bottom: 24px;">
+        <!-- Left: Sector Distribution Chart -->
+        <div class="role-selector-card">
+          <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: 12px; color: var(--accent-navy);">
+            🌐 Talent Demand by Ayush / Healthcare Sector
+          </h4>
+          <div style="height: 260px; position: relative;">
+            <canvas id="adminSectorDonutChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Right: Regional State Clusters Table -->
+        <div class="skills-category-card">
+          <div class="category-title" style="color: var(--accent-navy);">
+            <span>📍 Regional Institutional Hubs & Placement Velocity</span>
+          </div>
+          <div class="table-responsive" style="box-shadow: none; border: none;">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>State / Cluster</th>
+                  <th>Participating Institutes</th>
+                  <th>Students Placed</th>
+                  <th>Employability Readiness</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="adminRegionalClustersTableBody">
+                <!-- Injected via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========================================================================= -->
+  <!-- MODALS -->
+  <!-- ========================================================================= -->
+
+  <!-- MODAL 1: TAKE SKILL ASSESSMENT QUIZ -->
+  <div id="quizModal" class="modal-backdrop">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h4 id="quizModalTitle">Skill Assessment Test</h4>
+        <button class="modal-close" onclick="closeModal('quizModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding: 10px 14px; background: #f0fdfa; border-radius: 8px; border: 1px solid #99f6e4;">
+          <span style="font-size: 0.85rem; font-weight: 600; color: var(--primary);">⏱️ Duration: 10 Mins | Passing: 70%</span>
+          <span id="quizTimer" style="font-size: 0.95rem; font-weight: 700; color: #dc2626;">09:59</span>
+        </div>
+        <div id="quizQuestionsContainer">
+          <!-- Injected via JS -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('quizModal')">Cancel</button>
+        <button class="btn btn-primary" onclick="submitActiveQuiz()">Submit Test & Verify Badge</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: POST NEW JOB / INTERNSHIP -->
+  <div id="postJobModal" class="modal-backdrop">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h4>Post New Opportunity</h4>
+        <button class="modal-close" onclick="closeModal('postJobModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Job / Internship Title</label>
+          <input type="text" id="newJobTitle" class="form-control" placeholder="e.g. Phytomedicine Formulation Associate">
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label>Opportunity Type</label>
+            <select id="newJobType" class="form-control">
+              <option value="Internship">Internship</option>
+              <option value="Placement">Full-time Placement</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Work Mode</label>
+            <select id="newJobMode" class="form-control">
+              <option value="Hybrid">Hybrid</option>
+              <option value="On-site">On-site</option>
+              <option value="Remote">Remote</option>
+            </select>
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label>Location</label>
+            <input type="text" id="newJobLocation" class="form-control" placeholder="e.g. Ghaziabad / Delhi-NCR">
+          </div>
+          <div class="form-group">
+            <label>Stipend / Salary CTC</label>
+            <input type="text" id="newJobStipend" class="form-control" placeholder="e.g. ₹35,000 / month or ₹8 LPA">
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label>Duration</label>
+            <input type="text" id="newJobDuration" class="form-control" placeholder="e.g. 6 Months or Permanent">
+          </div>
+          <div class="form-group">
+            <label>Application Deadline</label>
+            <input type="date" id="newJobDeadline" class="form-control" value="2026-11-30">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Required Competencies (Comma separated)</label>
+          <input type="text" id="newJobSkills" class="form-control" placeholder="e.g. HPLC Analysis, Phytochemical Extraction, GLP">
+        </div>
+        <div class="form-group">
+          <label>Role Description & Responsibilities</label>
+          <textarea id="newJobDescription" class="form-control" placeholder="Describe the candidate expectations, lab environment, and learning outcomes..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('postJobModal')">Cancel</button>
+        <button class="btn btn-primary" onclick="submitNewJob()">Publish Listing</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 3: REGISTER NEW MoU -->
+  <div id="addMouModal" class="modal-backdrop">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h4>Register New Industry-Academia MoU</h4>
+        <button class="modal-close" onclick="closeModal('addMouModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Academic Institution</label>
+          <input type="text" id="newMouInstitution" class="form-control" value="All India Institute of Ayurveda, New Delhi">
+        </div>
+        <div class="form-group">
+          <label>Industry Partner Name</label>
+          <input type="text" id="newMouIndustry" class="form-control" placeholder="e.g. Dabur India Ltd / Himalaya Wellness">
+        </div>
+        <div class="form-group">
+          <label>MoU Title / Scope</label>
+          <input type="text" id="newMouTitle" class="form-control" placeholder="e.g. Joint Herbal Extract Research & PG Internship Pipeline">
+        </div>
+        <div class="form-group">
+          <label>Primary Focus Area</label>
+          <input type="text" id="newMouFocus" class="form-control" placeholder="e.g. Clinical Research, Phytochemistry, Pharmacovigilance">
+        </div>
+        <div class="form-group">
+          <label>Deliverables & Commitments</label>
+          <textarea id="newMouDeliverables" class="form-control" placeholder="e.g. 10 annual sponsored internships, shared LC-MS lab access, joint patenting..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('addMouModal')">Cancel</button>
+        <button class="btn btn-primary" onclick="submitNewMou()">Register & Sign MoU</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 4: POST R&D CHALLENGE -->
+  <div id="postProjectModal" class="modal-backdrop">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h4>Post Industry R&D Capstone Challenge</h4>
+        <button class="modal-close" onclick="closeModal('postProjectModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Challenge Title</label>
+          <input type="text" id="newProjTitle" class="form-control" placeholder="e.g. Thermal Stability Optimization of Polyherbal Decoctions">
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label>Domain</label>
+            <input type="text" id="newProjDomain" class="form-control" placeholder="e.g. Phytochemistry / Bio-analytics">
+          </div>
+          <div class="form-group">
+            <label>Industry Mentor</label>
+            <input type="text" id="newProjMentor" class="form-control" placeholder="e.g. Dr. Rajesh Verma (Lead Scientist)">
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label>Stipend / Research Grant</label>
+            <input type="text" id="newProjGrant" class="form-control" placeholder="e.g. ₹1,50,000 Project Grant">
+          </div>
+          <div class="form-group">
+            <label>Duration</label>
+            <input type="text" id="newProjDuration" class="form-control" placeholder="e.g. 4 Months">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Required Competencies</label>
+          <input type="text" id="newProjSkills" class="form-control" placeholder="e.g. HPLC Analysis, Phytochemical Extraction">
+        </div>
+        <div class="form-group">
+          <label>Problem Statement & Objectives</label>
+          <textarea id="newProjDesc" class="form-control" placeholder="Detail the industrial challenge, expected methodology, and deliverables..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('postProjectModal')">Cancel</button>
+        <button class="btn btn-primary" onclick="submitNewProject()">Publish R&D Challenge</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Footer -->
+  <footer class="portal-footer">
+    <div class="footer-content">
+      <div>
+        <strong>Smart India Hackathon (SIH26044)</strong> • Ministry of Ayush, Government of India
+      </div>
+      <div>
+        Skill Mapping, Smart Automation, Internships & Placement Platform
+      </div>
+    </div>
+  </footer>
+
+  <!-- Main Application Logic -->
+  <script src="/js/app.js"></script>
+</body>
+</html>
