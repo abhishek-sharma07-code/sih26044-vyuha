@@ -13,8 +13,8 @@ from app import app
 
 if __name__ == '__main__':
     print("==================================================================")
-    print("[*] AYUSH-SETU: Academia - Industry Collaboration & Skill Portal")
-    print("[*] Smart India Hackathon (SIH26044) - Ministry of Ayush Prototype")
+    print("[*] AYUSHSETU: National Academia - Industry Collaboration Platform")
+    print("[*] Ministry of Ayush, Government of India")
     print("==================================================================")
     
     db_path = os.path.join(os.path.dirname(__file__), "portal.db")

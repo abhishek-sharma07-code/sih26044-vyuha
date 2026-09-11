@@ -21,7 +21,7 @@ def get_db_connection():
     return conn
 
 def init_db():
-    conn = get_db_connection()
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
     # Create tables
@@ -175,24 +175,28 @@ def init_db():
 def seed_data(conn):
     cursor = conn.cursor()
 
-    # 1. Users
+    # 1. Users with Requested Personas:
+    # Student: Rasshi Sharma
+    # Teacher / TPO: Prof. Vaibhav Jain
+    # Recruiter: Chetan Deshmukh
+    # Admin: Atharva Pandey
     users_data = [
-        # Student 1 (Default active student)
-        (1, 'priya_ayush', 'Priya Sharma', 'priya.sharma@aiia.gov.in', 'student', 'All India Institute of Ayurveda, New Delhi', 'PS', 'Final year B.Pharm (Ayurveda) scholar specializing in herbal drug standardization and phytochemistry.'),
+        # Student 1: Rasshi Sharma (Default active student)
+        (1, 'rasshi_ayush', 'Rasshi Sharma', 'rasshi.sharma@aiia.gov.in', 'student', 'All India Institute of Ayurveda, New Delhi', 'RS', 'Final year B.Pharm (Ayurveda) scholar specializing in herbal drug standardization and phytochemistry.'),
         # Student 2
         (2, 'rohan_pharma', 'Rohan Deshmukh', 'rohan.d@niper.ac.in', 'student', 'NIPER Mohali', 'RD', 'Postgraduate researcher in Clinical Research and Pharmacovigilance.'),
         # Student 3
         (3, 'ananya_biotech', 'Ananya Gupta', 'ananya.g@iitd.ac.in', 'student', 'IIT Delhi - Dept of Biochemical Engg', 'AG', 'Biotechnology undergrad working on bioinformatics and computational herbal compound screening.'),
-        # Recruiter 1 (Default active recruiter)
-        (4, 'rajesh_dabur', 'Dr. Rajesh Verma', 'rajesh.verma@dabur.com', 'recruiter', 'Dabur India Ltd', 'RV', 'Chief Research Scientist & Campus Talent Lead, Natural Care Division at Dabur.'),
+        # Recruiter 1: Chetan Deshmukh (Default active recruiter)
+        (4, 'chetan_dabur', 'Chetan Deshmukh', 'chetan.deshmukh@dabur.com', 'recruiter', 'Dabur India Ltd', 'CD', 'Head of R&D Talent & Natural Healthcare Innovation, Dabur India Ltd.'),
         # Recruiter 2
         (5, 'priya_himalaya', 'Priya Nair', 'p.nair@himalayawellness.com', 'recruiter', 'Himalaya Wellness Company', 'PN', 'Head of University Relations and Drug Discovery Partnerships at Himalaya.'),
         # Recruiter 3
         (6, 'arvind_patanjali', 'Dr. Arvind Swaminathan', 'arvind.s@patanjali.res.in', 'recruiter', 'Patanjali Research Foundation', 'AS', 'Director of Phytopharmacology & Research Fellowships.'),
-        # TPO 1 (Default active TPO)
-        (7, 'sunita_tpo', 'Prof. Sunita Rao', 'tpo@aiia.gov.in', 'tpo', 'All India Institute of Ayurveda, New Delhi', 'SR', 'Dean of Academic Collaborations & Head Training & Placement Officer.'),
-        # Ministry Admin (Default active admin)
-        (8, 'admin_ayush', 'Shri V. K. Saxena', 'director.skill@ayush.gov.in', 'admin', 'Ministry of Ayush, Govt. of India', 'VS', 'National Mission Director, Ayush Academia-Industry Innovation & Placement Council.')
+        # Teacher / TPO: Prof. Vaibhav Jain (Default active TPO)
+        (7, 'vaibhav_tpo', 'Prof. Vaibhav Jain', 'tpo@aiia.gov.in', 'tpo', 'All India Institute of Ayurveda, New Delhi', 'VJ', 'Dean of Academic Collaborations & Head Training & Placement Officer.'),
+        # Admin: Atharva Pandey (Default active admin)
+        (8, 'atharva_ayush', 'Atharva Pandey', 'director.skill@ayush.gov.in', 'admin', 'Ministry of Ayush, Govt. of India', 'AP', 'National Mission Director, Ayush Academia-Industry Innovation & Placement Council.')
     ]
     cursor.executemany("""
         INSERT INTO users (id, username, name, email, role, organization, avatar_initials, bio)
@@ -210,13 +214,13 @@ def seed_data(conn):
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, profiles)
 
-    # 3. Student Skills (Priya's skills & other students)
+    # 3. Student Skills (Rasshi Sharma's skills)
     student_skills_data = [
-        # Priya (Student 1)
-        (1, 'Phytochemical Extraction', 'Advanced', 1, 'Prof. Sunita Rao (AIIA)'),
+        # Rasshi Sharma (Student 1)
+        (1, 'Phytochemical Extraction', 'Advanced', 1, 'Prof. Vaibhav Jain (AIIA)'),
         (1, 'HPLC Analysis', 'Intermediate', 1, 'Dabur Certified Assessment'),
         (1, 'Ayurvedic Pharmacopoeia (API)', 'Advanced', 1, 'Ministry of Ayush Portal'),
-        (1, 'Good Laboratory Practices (GLP)', 'Intermediate', 1, 'AIIA Faculty Endorsement'),
+        (1, 'Good Laboratory Practices (GLP)', 'Intermediate', 1, 'Prof. Vaibhav Jain (AIIA)'),
         (1, 'Formulation Development', 'Intermediate', 0, None),
         (1, 'Spectroscopy (UV-Vis)', 'Intermediate', 0, None),
 
@@ -331,12 +335,12 @@ def seed_data(conn):
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, jobs_data)
 
-    # 6. Applications
+    # 6. Applications (Rasshi Sharma applied)
     applications_data = [
-        # Priya Sharma applied for Job 1 (Dabur Phytochemistry Intern) - Match score ~88%
-        (1, 1, 1, 88, 'Shortlisted', '2026-09-01', 'High skill match in HPLC and Extraction. Candidate has official AIIA recommendation.'),
-        # Priya Sharma applied for Job 2 (Dabur Formulation) - Match score ~72%
-        (2, 2, 1, 72, 'Applied', '2026-09-03', 'Application pending recruiter initial screening.'),
+        # Rasshi Sharma applied for Job 1 (Dabur Phytochemistry Intern) - Match score ~88%
+        (1, 1, 1, 88, 'Shortlisted', '2026-09-01', 'High skill match in HPLC and Extraction. Endorsed by Prof. Vaibhav Jain.'),
+        # Rasshi Sharma applied for Job 2 (Dabur Formulation) - Match score ~72%
+        (2, 2, 1, 72, 'Applied', '2026-09-03', 'Application pending Chetan Deshmukh initial screening.'),
         # Rohan applied for Job 3 (Himalaya Clinical Research Trainee) - Match score ~94%
         (3, 3, 2, 94, 'Interview', '2026-08-28', 'Technical interview scheduled for 12th Sept.'),
         # Ananya applied for Job 5 (Himalaya Computational Intern) - Match score ~96%
@@ -352,7 +356,7 @@ def seed_data(conn):
         (1, 'All India Institute of Ayurveda, New Delhi', 'Dabur India Ltd',
          'Strategic Research & Student Internship Partnership in Phytomedicine',
          '2025-08-15', '2028-08-14', 'Active', 'Phytochemistry, Formulation, & PG Internships',
-         'Annual 15 student internships, co-funded research lab on standardized Rasayana extracts, guest lectures by Dabur scientists.', 4),
+         'Annual 15 student internships, co-funded research lab on standardized Rasayana extracts, guest lectures by Chetan Deshmukh and Dabur scientists.', 4),
 
         (2, 'All India Institute of Ayurveda, New Delhi', 'Himalaya Wellness Company',
          'Joint Clinical Validation and Evidence-Based Ayurveda Initiative',
@@ -378,7 +382,7 @@ def seed_data(conn):
     joint_projects_data = [
         (1, 'Dabur India Ltd', 'Standardization of Ashwagandha Biomarkers Using HPLC-MS', 'Phytochemistry',
          'Develop a rapid chromatographic protocol to isolate Withaferin-A with >98% purity from dry root extracts and assess thermal stability.',
-         'Dr. Rajesh Verma (Dabur R&D)', 'Prof. Sunita Rao (AIIA)', '₹1,50,000 Project Grant + Equipment Access', '4 Months',
+         'Chetan Deshmukh (Dabur R&D)', 'Prof. Vaibhav Jain (AIIA)', '₹1,50,000 Project Grant + Equipment Access', '4 Months',
          json.dumps(["HPLC Analysis", "Phytochemical Extraction", "Spectroscopy (UV-Vis)"]), 'Open for Teams'),
 
         (2, 'Himalaya Wellness Company', 'AI-Driven Quality Assurance for Botanical Raw Materials', 'Bioinformatics & Computer Vision',
@@ -478,7 +482,7 @@ def seed_data(conn):
         VALUES (?, ?, ?, ?, ?, ?, ?)
     """, assessments_data)
 
-    # 10. Curriculum Modules (For TPO & Academic Alignment)
+    # 10. Curriculum Modules (For Prof. Vaibhav Jain & Academic Alignment)
     curriculum_data = [
         (1, 'All India Institute of Ayurveda, New Delhi', 'B.Pharm (Ayurveda)',
          'Dravyaguna & Phytopharmaceutics (Sem 6)',
