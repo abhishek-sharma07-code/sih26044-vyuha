@@ -11,10 +11,13 @@ static_dir = os.path.join(base_dir, 'static')
 
 app = Flask(__name__, static_folder=static_dir, static_url_path='')
 
-# Ensure DB exists on startup
-DB_FILE = os.path.join(base_dir, "portal.db")
-if not os.path.exists(DB_FILE):
+# Vercel filesystem is read-only except /tmp — detect and redirect DB path
+IS_VERCEL = bool(os.environ.get('VERCEL'))
+DB_FILE = '/tmp/portal.db' if IS_VERCEL else os.path.join(base_dir, 'portal.db')
+os.environ['AYUSHSETU_DB_PATH'] = DB_FILE
+if not os.path.exists(DB_FILE) or IS_VERCEL:
     init_db()
+
 
 @app.route('/')
 def index():

@@ -3,26 +3,25 @@ import json
 import os
 import shutil
 
-IS_VERCEL = os.environ.get("VERCEL") == "1" or os.environ.get("NOW_REGION") is not None
+# Respect path set by app.py (handles Vercel /tmp vs local dev)
+_default_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "portal.db")
+DB_PATH = os.environ.get("AYUSHSETU_DB_PATH") or (
+    "/tmp/portal.db" if (os.environ.get("VERCEL") or os.environ.get("NOW_REGION")) else _default_path
+)
 
-if IS_VERCEL:
-    DB_PATH = "/tmp/portal.db"
-    ORIGINAL_DB = os.path.join(os.path.dirname(os.path.abspath(__file__)), "portal.db")
-    if not os.path.exists(DB_PATH) and os.path.exists(ORIGINAL_DB):
-        shutil.copyfile(ORIGINAL_DB, DB_PATH)
-else:
-    DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "portal.db")
 
 def get_db_connection():
-    if IS_VERCEL and not os.path.exists(DB_PATH):
+    if not os.path.exists(DB_PATH):
         init_db()
-    conn = sqlite3.connect(DB_PATH)
+    conn = sqlite3.connect(DB_PATH, timeout=30.0)
     conn.row_factory = sqlite3.Row
     return conn
 
+
 def init_db():
-    conn = sqlite3.connect(DB_PATH)
+    conn = sqlite3.connect(DB_PATH, timeout=30.0)
     cursor = conn.cursor()
+
 
     # Create tables
     cursor.executescript("""
