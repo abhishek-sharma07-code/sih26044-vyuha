@@ -88,6 +88,7 @@ const HERO_BENCHMARKS = {
 // Initializer
 document.addEventListener('DOMContentLoaded', () => {
   initHeroCapsule();
+  openAuthModal(); // <-- show login/sign‑in modal on first visit
   loadStudentDropdown();   // populate student selector from DB
   triggerSkillGapAnalysis();
   loadQuizzes();
