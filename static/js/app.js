@@ -272,20 +272,51 @@ function renderSkillGapResults(data) {
     }
   }
 
-  // Bridge Roadmap
+  // Bridge Roadmap — build from API's missing_skills + partial_skills if upskilling_roadmap absent
   const bridgeList = document.getElementById('bridgeRoadmapList');
-  if (bridgeList && data.upskilling_roadmap) {
-    bridgeList.innerHTML = data.upskilling_roadmap.map(m => `
-      <div class="bridge-item-card">
-        <div class="bridge-info-left">
-          <span class="bridge-module-title">${m.course_title || m.skill}</span>
-          <span class="bridge-module-partner">${m.provider} • ${m.duration}</span>
+  if (bridgeList) {
+    // Normalize: use direct upskilling_roadmap (mock fallback) OR build from real API response
+    let roadmap = data.upskilling_roadmap;
+    if (!roadmap || roadmap.length === 0) {
+      const gapSources = [
+        ...(data.missing_skills || []),
+        ...(data.partial_skills || [])
+      ];
+      roadmap = gapSources.map((s, idx) => {
+        const lr = s.learning_recommendation || {};
+        // Estimate score boost based on weight or position
+        const boost = s.weight ? Math.round(s.weight * 0.4) : Math.max(4, 12 - idx * 2);
+        return {
+          skill: s.name,
+          course_title: lr.course || `${s.name} Certification`,
+          provider: lr.provider || 'Ministry of Ayush / SWAYAM',
+          duration: lr.duration || '3 Weeks',
+          type: lr.type || 'Bridge Course',
+          project: lr.project_recommendation || '',
+          estimated_score_increase: boost
+        };
+      });
+    }
+
+    if (roadmap && roadmap.length > 0) {
+      bridgeList.innerHTML = roadmap.map(m => `
+        <div class="bridge-item-card">
+          <div class="bridge-info-left">
+            <span class="bridge-module-title">${m.course_title || m.skill}</span>
+            <span class="bridge-module-partner">${m.provider} • ${m.duration}${m.type ? ' · ' + m.type : ''}</span>
+            ${m.project ? `<span class="bridge-project-tip" style="font-size:0.7rem;color:#a78bfa;margin-top:2px;display:block">📌 ${m.project}</span>` : ''}
+          </div>
+          <span class="bridge-boost-tag">+${m.estimated_score_increase}% Match</span>
         </div>
-        <span class="bridge-boost-tag">+${m.estimated_score_increase}% Match</span>
-      </div>
-    `).join('');
+      `).join('');
+    } else {
+      bridgeList.innerHTML = `<p style="color:#6b7280;font-size:0.85rem;padding:12px 0;">
+        🎉 All required skills matched! No upskilling needed for this role.
+      </p>`;
+    }
   }
 }
+
 
 function simulateSkillGapClient(studentId, roleId) {
   const mockAnalysis = {
