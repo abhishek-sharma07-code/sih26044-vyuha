@@ -88,6 +88,7 @@ const HERO_BENCHMARKS = {
 // Initializer
 document.addEventListener('DOMContentLoaded', () => {
   initHeroCapsule();
+  loadStudentDropdown();   // populate student selector from DB
   triggerSkillGapAnalysis();
   loadQuizzes();
   loadJobs();
@@ -96,6 +97,43 @@ document.addEventListener('DOMContentLoaded', () => {
   loadAdminAnalytics();
   loadDbStats();
 });
+
+// Load students from API into the studentSelect dropdown
+async function loadStudentDropdown() {
+  const select = document.getElementById('studentSelect');
+  if (!select) return;
+  try {
+    const res = await fetch('/api/roles');
+    if (!res.ok) return;
+    const users = await res.json();
+    const students = users.filter(u => u.role === 'student');
+    if (students.length === 0) return;
+
+    // Replace hardcoded options with live DB data
+    select.innerHTML = students.map(s => `
+      <option value="${s.id}">${s.name} • ${s.organization || 'Ayush Institution'}</option>
+    `).join('');
+
+    // Also refresh the quick-select preset pills
+    const pillRow = document.querySelector('.quick-profiles-row');
+    if (pillRow) {
+      pillRow.innerHTML = students.slice(0, 5).map((s, idx) => `
+        <button class="preset-pill ${idx === 0 ? 'active' : ''}"
+          onclick="selectStudentPreset(${s.id}, this)">
+          ${s.name}
+        </button>
+      `).join('');
+    }
+
+    // Set active student to first in list if not already set
+    if (students.length > 0 && !state.activeStudentId) {
+      state.activeStudentId = students[0].id;
+    }
+  } catch (e) {
+    // Silently keep hardcoded fallback options if API fails
+  }
+}
+
 
 // Toast Utility
 function showToast(message, icon = '✓') {
@@ -1016,18 +1054,33 @@ async function submitNewStudent(e) {
     });
     if (res.ok) {
       const result = await res.json();
-      showToast(result.message || 'Student added to database!', '✓');
+      showToast(`✅ ${name} added! Select them in Student Workspace to view their profile.`, '✓');
       closeDatabaseStudio();
+      await loadStudentDropdown();  // <-- refresh dropdown with new student
       loadCandidates();
       loadDbStats();
+      // Auto-select the newly added student
+      if (result.student_id) {
+        state.activeStudentId = result.student_id;
+        const select = document.getElementById('studentSelect');
+        if (select) select.value = result.student_id;
+        triggerSkillGapAnalysis();
+      }
+      return;
+    } else {
+      const err = await res.json();
+      showToast(`Error: ${err.error || 'Could not save student'}`, '✗');
       return;
     }
-  } catch (err) {}
+  } catch (err) {
+    showToast('Server offline — running in demo mode', '⚠');
+  }
 
   showToast(`Student '${name}' inserted into database!`, '✓');
   closeDatabaseStudio();
   loadCandidates();
 }
+
 
 async function submitNewJob(e) {
   e.preventDefault();
